@@ -244,14 +244,22 @@ class CaseRunner(BaseModel):
         with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
             future = executor.submit(self._task)
             try:
-                return future.result(timeout=self.ca.optimize_timeout)[1]
+                # Optimize task의 결과를 받음
+                result = future.result(timeout=self.ca.optimize_timeout)
+                log.info(f"Optimize task result: {result}")  
+                return result[1]  
             except TimeoutError as e:
                 log.warning(f"VectorDB optimize timeout in {self.ca.optimize_timeout}")
                 for pid, _ in executor._processes.items():
                     psutil.Process(pid).kill()
                 raise PerformanceTimeoutError("Performance case optimize timeout") from e
+            except KeyError as e:
+                log.error(f"KeyError during optimization: {e}, result might not contain expected keys.")
+                traceback.print_exc()
+                raise e 
             except Exception as e:
                 log.warning(f"VectorDB optimize error: {e}")
+                traceback.print_exc()
                 raise e from None
 
     def _init_search_runner(self):

@@ -90,7 +90,16 @@ class PgVector(VectorDB):
     
     def _generate_search_query(self, filtered: bool=False) -> sql.Composed:
         index_param = self.case_config.index_param()
-        reranking = self.case_config.search_param()["reranking"]
+        search_params = self.case_config.search_param()
+        reranking = search_params.get("reranking", None) # 'reranking' 키 없으면 none으로 
+        reranking_metric_fun_op = search_params.get("reranking_metric_fun_op", "")
+        # reranking = self.case_config.search_param()["reranking"]
+
+        # quntization_type = none and reanking = Ture : 처리
+        if index_param["quantization_type"] == "none" and reranking:
+            log.warning("quantization_type이 'none'인 상황에서 reranking을 요청했습니다. reranking을 비활성화합니다.")
+            reranking = None  # reranking을 비활성화
+
         column_name = (
             sql.SQL("binary_quantize({0})").format(sql.Identifier("embedding"))
             if index_param["quantization_type"] == "bit"
