@@ -229,11 +229,22 @@ class TestResult(BaseModel):
                 task_config = case_result.get("task_config")
                 db = DB(task_config.get("db"))
 
+                if not hasattr(db, 'config_cls') or not callable(db.config_cls):
+                    raise ValueError(f"db.config_cls is not properly set for db: {db}")
+
                 task_config["db_config"] = db.config_cls(**task_config["db_config"])
+
+                if not hasattr(db, 'case_config_cls') or not callable(db.case_config_cls):
+                    raise ValueError(f"db.case_config_cls is not properly set or callable for db: {db}")
+
+                if db.case_config_cls is None:
+                    raise ValueError(f"db.case_config_cls is None. db 객체가 올바르게 초기화되지 않았습니다: {db}")
+                elif not callable(db.case_config_cls):
+                    raise TypeError(f"db.case_config_cls is callable이 아닙니다: {db.case_config_cls}")
+
                 task_config["db_case_config"] = db.case_config_cls(
                     index_type=task_config["db_case_config"].get("index", None),
                 )(**task_config["db_case_config"])
-
                 case_result["task_config"] = task_config
 
                 if trans_unit:
