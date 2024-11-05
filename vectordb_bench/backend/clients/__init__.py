@@ -160,7 +160,8 @@ class DB(Enum):
     def case_config_cls(self, index_type: IndexType | None = None) -> Type[DBCaseConfig]:
         if self == DB.Milvus:
             from .milvus.config import _milvus_case_config
-            return _milvus_case_config.get(index_type)
+            # 기본값으로 EmptyDBCaseConfig 반환
+            return _milvus_case_config.get(index_type, EmptyDBCaseConfig)
 
         if self == DB.ZillizCloud:
             from .zilliz_cloud.config import AutoIndexConfig
@@ -180,11 +181,13 @@ class DB(Enum):
 
         if self == DB.PgVector:
             from .pgvector.config import _pgvector_case_config
-            return _pgvector_case_config.get(index_type)
+            # 기본값으로 EmptyDBCaseConfig 반환
+            return _pgvector_case_config.get(index_type, EmptyDBCaseConfig)
 
         if self == DB.PgVectoRS:
             from .pgvecto_rs.config import _pgvecto_rs_case_config
-            return _pgvecto_rs_case_config.get(index_type)
+            # 기본값으로 EmptyDBCaseConfig 반환
+            return _pgvecto_rs_case_config.get(index_type, EmptyDBCaseConfig)
 
         if self == DB.AWSOpenSearch:
             from .aws_opensearch.config import AWSOpenSearchIndexConfig
@@ -192,13 +195,15 @@ class DB(Enum):
 
         if self == DB.PgVectorScale:
             from .pgvectorscale.config import _pgvectorscale_case_config
-            return _pgvectorscale_case_config.get(index_type)
+            # 기본값으로 EmptyDBCaseConfig 반환
+            return _pgvectorscale_case_config.get(index_type, EmptyDBCaseConfig)
 
         if self == DB.PgDiskANN:
             from .pgdiskann.config import _pgdiskann_case_config
-            return _pgdiskann_case_config.get(index_type)
+            # 기본값으로 EmptyDBCaseConfig 반환
+            return _pgdiskann_case_config.get(index_type, EmptyDBCaseConfig)
 
-        # DB.Pinecone, DB.Chroma, DB.Redis
+        # Pinecone, Chroma, Redis 등 다른 DB는 EmptyDBCaseConfig 반환
         return EmptyDBCaseConfig
 
 
