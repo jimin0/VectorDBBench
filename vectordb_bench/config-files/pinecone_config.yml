@@ -1,0 +1,5 @@
+pinecoe:
+  db_label: pineconeTest
+  num_concurrency: 1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75
+  api_key: pcsk_5KnkPx_JHBBgZgKeeh6DmdRbpH2h1ffr47prq7rpJiCx6uTUw9EqKGYddN4e3nJUqiLPoK
+  index_name: test1

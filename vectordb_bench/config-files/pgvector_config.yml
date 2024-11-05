@@ -1,0 +1,14 @@
+pgvectorivfflat:
+  db_label: pgVecTest
+  user_name: postgres
+  db_name: mydatabase
+  host: localhost
+  password: imeidpaw
+  port: 5432
+  probes: 1
+  lists: 10
+  maintenance_work_mem: 2GB
+  max_parallel_workers: 7
+  quantization_type: none
+  reranking: false
+  num_concurrency: 1,5,10,15,20,25,30,35,40,45,50
